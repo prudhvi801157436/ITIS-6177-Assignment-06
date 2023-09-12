@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prudhvi Assignment-06</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous" />
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <label for="title">Title</label>
+          <input type="text" name="title" id="title" />
+        </div>
+        <div class="col-xs-12">
+            <label for="author">Author</label>
+            <input type="text" name="author" id="author" />
+          </div>
+      </div>
+      <div class="col-xs-12">
+        <button type="button" onclick="sendPosts()" class="btn btn-success">Send</button>
+      </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12" id="list">
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.5.0/axios.min.js" integrity="sha512-aoTNnqZcT8B4AmeCFmiSnDlc4Nj/KPaZyB5G7JnOnUEkdNpCZs1LCankiYi01sLTyWy+m2P+W4XM+BuQ3Q4/Dg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <script>
+        async function sendPosts(){
+            const title = document.getElementById('title').value;
+            const author = document.getElementById('author').value;
+            const req = {
+                title: title,
+                author: author
+        };
+        axios.post('http://localhost:3004/posts', req)
+        .then(function (response){
+            console.log(response);
+            document.getElementById('title').value = '';
+            document.getElementById('title').focus();
+            document.getElementById('author').value = '';
+            getPosts();
+        }).catch(function (error){
+            console.log(error);
+        });
+    }
+        
+        async function getPosts(){
+            axios.get('http://localhost:3004/posts')
+            .then(function (response){
+                const list = document.getElementById('list');
+                if (response && response.data){
+                    list.innerHTML = '';
+                    response.data.forEach(item =>{
+                        list.innerHTML += '<br>' + item.title + ' - ' + item.author;
+                    });
+                }
+            }).catch(function (error){
+                console.log(error);
+            });
+        }
+        getPosts();
+    </script>
+  </body>
+</html>
